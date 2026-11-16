@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; worker-src 'none'"
+    />
+    <meta
+      name="description"
+      content="An explainable earnings-call sentiment teaching lab. Original learned naive Bayes, invented data, local sentence evidence. Not a trading signal."
+    />
+    <title>Callshade - Tone, with a paper trail</title>
+    <link rel="icon" href="icon.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#lab">Skip to analyzer</a>
+    <header>
+      <a class="brand" href="#">c<span>◒</span>llshade</a
+      ><span class="edition">FINANCIAL LANGUAGE / STUDY 02</span>
+      <nav>
+        <a href="#method">Method</a><a href="#limits">Limits</a
+        ><a href="https://github.com/Aditya2375/callshade">Source ↗</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">EARNINGS-CALL SENTIMENT, MADE INSPECTABLE</p>
+          <h1>Read the tone.<br /><em>Keep the evidence.</em></h1>
+          <p class="intro">
+            A label is the start of a question, not the end. Follow a small
+            learned model from sentence to feature to the counts behind its
+            call.
+          </p>
+          <a class="jump" href="#lab">Open the reading desk <span>↘</span></a>
+          <p class="fine">
+            Original synthetic corpus. Local text processing. No trading signal.
+          </p>
+        </div>
+        <div
+          class="hero-card"
+          aria-label="Concept illustration, not a model prediction"
+        >
+          <div class="sheet-top">
+            <span>THE SENTENCE</span><span>01 / A CLOSER READ</span>
+          </div>
+          <p class="quote">
+            &quot;Demand grew,<br />but margins<br />remained weak.&quot;
+          </p>
+          <div class="mark positive">demand grew <span>↗</span></div>
+          <div class="mark negative">margins weak <span>↘</span></div>
+          <p class="illustration">
+            Mixed language resists a single color.<br />Illustration only, not
+            computed evidence.
+          </p>
+        </div>
+      </section>
+      <section id="lab" class="lab">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">01 / THE READING DESK</p>
+            <h2>One sentence at a time.</h2>
+          </div>
+          <p>
+            This is a small, synthetic teaching model, not production financial
+            NLP. Pasted text stays in this page. It can be wrong, especially on
+            negation and unfamiliar language.
+          </p>
+        </div>
+        <div class="desk">
+          <aside>
+            <label for="sample">Start with a control</label
+            ><select id="sample">
+              <option value="mixed">Mixed prepared remarks + Q&amp;A</option>
+              <option value="negation">Negation stress test</option>
+              <option value="unknown">Unknown-language control</option></select
+            ><button id="load" class="secondary" type="button">
+              Load control</button
+            ><label for="transcript">Excerpt to analyze</label
+            ><textarea
+              id="transcript"
+              rows="16"
+              spellcheck="false"
+              maxlength="32000"
+            ></textarea>
+            <p class="hint">
+              Up to 16,000 Unicode characters, 160 sentences, 600 characters and
+              128 ASCII word tokens per sentence. Headers must stand alone:
+              [Prepared], [Q&amp;A], CEO:, CFO:, Analyst:, Operator:.
+            </p>
+            <label for="alpha">Additive smoothing α</label
+            ><select id="alpha">
+              <option value="0.25">0.25 / less smoothing</option>
+              <option value="1" selected>1 / Laplace</option>
+              <option value="4">4 / more smoothing</option></select
+            ><button id="run" type="button">
+              Analyze locally <span>→</span>
+            </button>
+            <p id="notice" role="status" aria-live="polite"></p>
+            <p class="hint">
+              No file upload, feed, storage, cookies or external model. Reset or
+              close this tab to clear text. Static hosting may log asset
+              requests.
+            </p>
+          </aside>
+          <div class="reading">
+            <div class="reading-top">
+              <p class="eyebrow" id="run-title">MODEL READY</p>
+              <span id="model-info">54 invented training sentences</span>
+            </div>
+            <div class="metrics" id="metrics"></div>
+            <p class="hint">
+              Counts are predicted sentence labels, not corporate mood,
+              sentiment strength, calibrated confidence or expected returns.
+              Analyst questions and operator speech are kept separate below, not
+              treated as management statements.
+            </p>
+            <div id="groups" aria-label="Section and speaker composition"></div>
+            <div class="reading-head">
+              <h3>Sentence ledger</h3>
+              <span>SELECT TO SEE THE EVIDENCE</span>
+            </div>
+            <div id="sentences"></div>
+            <section class="inspector" aria-labelledby="inspect-title">
+              <div class="reading-head">
+                <h3 id="inspect-title">Inside the label</h3>
+                <span id="inspect-id"></span>
+              </div>
+              <p id="inspect-text" class="inspect-text"></p>
+              <div id="detail-metrics" class="detail-metrics"></div>
+              <p class="hint">
+                Coverage is recognized unigram + bigram occurrences divided by
+                all such occurrences. Familiar words are not proof of meaningful
+                understanding. Margin is a model log-score difference, not a
+                probability or confidence.
+              </p>
+              <p id="decomposition" class="mono"></p>
+              <div class="table-wrap">
+                <table>
+                  <caption>
+                    Every recognized feature: contribution to winner minus
+                    runner-up
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th>Feature</th>
+                      <th>Count</th>
+                      <th>Log-score Δ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="evidence"></tbody>
+                </table>
+              </div>
+              <p id="no-evidence" class="hint"></p>
+            </section>
+          </div>
+        </div>
+      </section>
+      <section id="method" class="method">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">02 / A SMALL MODEL, OPEN BOOKS</p>
+            <h2>Learn the counts.<br />Show the limits.</h2>
+          </div>
+          <p>
+            No opaque service and no licensed lexicon hidden underneath.
+            Original Python and JavaScript implementations fit the same
+            multinomial naive-Bayes model.
+          </p>
+        </div>
+        <div class="steps">
+          <article>
+            <span>01 / TOKENIZE</span>
+            <h3>Words, then pairs.</h3>
+            <p>
+              Lowercase ASCII word tokens and adjacent bigrams. Numbers and
+              punctuation are not features. No stemming, semantic parsing or
+              explicit negation logic.
+            </p>
+          </article>
+          <article>
+            <span>02 / FIT</span>
+            <h3>Train on invented calls.</h3>
+            <p>
+              54 author-labeled sentences from calls 01 to 09 set the
+              vocabulary, class priors and smoothed feature counts. Nothing from
+              the excerpt refits the model.
+            </p>
+          </article>
+          <article>
+            <span>03 / ASSIGN</span>
+            <h3>Add the log evidence.</h3>
+            <p>
+              Sum class log prior and recognized feature counts times learned
+              log weights. Largest score wins; class-order ties prefer negative,
+              then neutral, then positive.
+            </p>
+          </article>
+          <article>
+            <span>04 / QUESTION</span>
+            <h3>Inspect, do not trust.</h3>
+            <p>
+              Zero known features means unscored, not neutral. A tiny familiar
+              fragment can still force a label. Correlated word pairs can make
+              evidence look stronger than it is.
+            </p>
+          </article>
+        </div>
+        <details id="evaluation">
+          <summary>Open the synthetic holdout audit</summary>
+          <div class="audit">
+            <p>
+              Calls 10 to 12 are held out in full: 18 invented sentences, 6 per
+              class. Labels describe the author's intended tone, not price
+              outcomes. Calls share vocabulary and writing patterns with
+              training. Even a perfect score here does not establish real-world
+              accuracy. This is a fixed group split, not time validation or
+              cross-validation. Changing smoothing after reading these results
+              is exploration, not untouched testing.
+            </p>
+            <div id="eval-metrics" class="detail-metrics"></div>
+            <p class="hint">
+              Majority-class baseline is 6/18 = 33.3%. Tied training class
+              counts choose negative. Macro-F1 averages the three class F1
+              values; unscored predictions count as misses.
+            </p>
+            <div class="table-wrap">
+              <table>
+                <caption>
+                  Confusion matrix: actual rows, predicted columns
+                </caption>
+                <thead>
+                  <tr>
+                    <th>Actual</th>
+                    <th>Neg</th>
+                    <th>Neutral</th>
+                    <th>Pos</th>
+                    <th>Unscored</th>
+                  </tr>
+                </thead>
+                <tbody id="confusion"></tbody>
+              </table>
+            </div>
+            <div id="holdout"></div>
+            <details>
+              <summary>Read every original corpus sentence</summary>
+              <div id="corpus"></div>
+            </details>
+          </div>
+        </details>
+      </section>
+      <section id="limits" class="limits">
+        <div>
+          <p class="eyebrow">03 / WHAT A LABEL CANNOT SAY</p>
+          <h2>Language is context.<br /><em>This is a baseline.</em></h2>
+        </div>
+        <div class="limit-list">
+          <article>
+            <h3>It does not understand the call.</h3>
+            <p>
+              Questions, sarcasm, scope of negation, comparisons, numbers,
+              forward-looking language and speaker intent are not understood.
+              Sentence splitting is simple, not an earnings-transcript parser.
+              Non-ASCII language is not supported; accented words can fragment
+              into misleading ASCII pieces.
+            </p>
+          </article>
+          <article>
+            <h3>It has not been validated on real companies.</h3>
+            <p>
+              72 short invented sentences cannot establish performance on real
+              financial disclosures. No FinBERT, Loughran-McDonald dictionary,
+              copied transcript, outside model weights or benchmark results are
+              included or claimed.
+            </p>
+          </article>
+          <article>
+            <h3>It is not a market signal.</h3>
+            <p>
+              No stock data, returns, trading rule, broker integration, PnL
+              backtest, investment advice or forecast. Model labels are fallible
+              descriptions of text, not evidence about a business or its price.
+            </p>
+          </article>
+          <article>
+            <h3>It stays here.</h3>
+            <p>
+              Text runs locally in this page. No telemetry, uploads, storage,
+              cookies or runtime network. The hosting service may log ordinary
+              asset requests. Source links leave the page.
+            </p>
+          </article>
+          <a class="jump" href="https://github.com/Aditya2375/callshade#readme"
+            >Read the exact contract <span>↗</span></a
+          >
+        </div>
+      </section>
+    </main>
+    <footer>
+      <span>callshade / a financial-language teaching lab</span
+      ><span>By Aditya Kulkarni / MIT</span>
+    </footer>
+  </body>
+</html>
